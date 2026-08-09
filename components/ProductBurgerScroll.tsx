@@ -25,7 +25,7 @@ export default function ProductBurgerScroll({
 
   const frameCount = product.frameCount || 251;
 
-  // Canvas fit-contain drawing logic (Full-Screen Hero Viewport)
+  // Canvas fit drawing logic (Cover fit for Mobile & Full-Screen Edge-to-Edge Desktop)
   const drawFrame = useCallback(
     (frameIndex: number) => {
       const canvas = canvasRef.current;
@@ -50,33 +50,33 @@ export default function ProductBurgerScroll({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-      // Math for contain fit covering full viewport
       const imgWidth = img.naturalWidth;
       const imgHeight = img.naturalHeight;
-      const imgAspect = imgWidth / imgHeight;
-      const canvasAspect = canvasWidth / canvasHeight;
+      const isMobile = window.innerWidth < 768;
 
-      let drawWidth = canvasWidth;
-      let drawHeight = canvasHeight;
-      let offsetX = 0;
-      let offsetY = 0;
+      let drawWidth: number;
+      let drawHeight: number;
+      let offsetX: number;
+      let offsetY: number;
 
-      // Full-screen fit scale factor
-      const scaleFactor = window.innerWidth < 640 ? 0.95 : 0.92;
-
-      if (canvasAspect > imgAspect) {
-        drawHeight = canvasHeight * scaleFactor;
-        drawWidth = drawHeight * imgAspect;
+      if (isMobile) {
+        // Mobile COVER fit: zoom/crop appropriately so there are NO empty borders or background gaps
+        const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight) * 1.05;
+        drawWidth = imgWidth * scale;
+        drawHeight = imgHeight * scale;
+        // Center the subject horizontally and vertically
         offsetX = (canvasWidth - drawWidth) / 2;
         offsetY = (canvasHeight - drawHeight) / 2;
       } else {
-        drawWidth = canvasWidth * scaleFactor;
-        drawHeight = drawWidth / imgAspect;
+        // Desktop COVER fit: fill full viewport edge-to-edge seamlessly
+        const scale = Math.max(canvasWidth / imgWidth, canvasHeight / imgHeight);
+        drawWidth = imgWidth * scale;
+        drawHeight = imgHeight * scale;
         offsetX = (canvasWidth - drawWidth) / 2;
         offsetY = (canvasHeight - drawHeight) / 2;
       }
 
-      // Draw high quality image onto canvas
+      // High quality rendering
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
@@ -209,10 +209,10 @@ export default function ProductBurgerScroll({
 
   return (
     <div ref={containerRef} className="relative h-[500vh] w-full">
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-        {/* Full-Screen Ambient Glow Aura */}
+      <div className="sticky top-0 h-[100vh] h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-zinc-950">
+        {/* Full Viewport Ambient Glow Aura */}
         <div
-          className="absolute w-[800px] h-[800px] rounded-full blur-[160px] opacity-35 pointer-events-none transition-colors duration-1000 animate-pulse-glow"
+          className="absolute w-[85vw] h-[85vh] max-w-[900px] max-h-[900px] rounded-full blur-[160px] opacity-30 pointer-events-none transition-colors duration-1000 animate-pulse-glow"
           style={{ backgroundColor: product.themeColor }}
         />
 
@@ -239,10 +239,10 @@ export default function ProductBurgerScroll({
           )}
         </AnimatePresence>
 
-        {/* Full Viewport Hero Canvas */}
+        {/* Full-Screen Edge-to-Edge Hero Canvas */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-contain relative z-10 transition-opacity duration-500"
+          className="w-full h-full h-[100dvh] object-cover relative z-10 transition-opacity duration-500"
           style={{ opacity: imagesLoaded ? 1 : 0 }}
         />
 
@@ -251,12 +251,12 @@ export default function ProductBurgerScroll({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-2"
+          className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-2"
         >
-          <span className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">
+          <span className="text-[10px] font-mono tracking-widest text-zinc-300/80 uppercase bg-black/40 px-2.5 py-0.5 rounded-full backdrop-blur-sm">
             Scroll To Dissect
           </span>
-          <div className="w-5 h-9 rounded-full border-2 border-white/20 p-1 flex justify-center">
+          <div className="w-5 h-9 rounded-full border-2 border-white/30 p-1 flex justify-center backdrop-blur-sm bg-black/20">
             <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
