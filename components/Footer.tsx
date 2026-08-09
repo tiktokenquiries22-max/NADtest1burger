@@ -1,132 +1,130 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import ContactCTA from './ContactCTA';
-import { Shield, Phone, Mail, MapPin } from 'lucide-react';
+import { useState } from "react";
+import { Flame, Send, Instagram, Twitter, Facebook } from "lucide-react";
 
 export default function Footer() {
-  return (
-    <footer className="bg-garage-dark border-t border-white/10 text-neutral-400 text-xs py-16 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-          {/* Brand Col */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-sm bg-white/5 border border-white/20 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-base font-extrabold tracking-wider uppercase text-white leading-tight">
-                  BELL AUTOMOTIVE
-                </span>
-                <span className="text-[10px] tracking-widest font-mono text-neutral-400 uppercase">
-                  Land Rover & 4x4 Specialists
-                </span>
-              </div>
-            </Link>
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
-            <p className="text-neutral-400 font-light leading-relaxed max-w-sm">
-              Family-run garage based in Queensferry, Wales. Over 20 years of dedicated Land Rover, Range Rover, and 4x4 diagnostic, repair, and servicing excellence.
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      setSubscribed(true);
+      setEmail("");
+      setTimeout(() => setSubscribed(false), 4000);
+    }
+  };
+
+  return (
+    <footer className="relative bg-zinc-950 text-zinc-400 border-t border-white/10 pt-16 sm:pt-20 pb-12 overflow-hidden">
+      {/* Subtle Background Glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90vw] max-w-[800px] h-[300px] bg-orange-600/10 rounded-full blur-[160px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 sm:gap-12 mb-12 sm:mb-16">
+          
+          {/* Brand Col */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-bold">
+                <Flame className="w-5 h-5 fill-current" />
+              </div>
+              <span className="text-xl sm:text-2xl font-black font-mono tracking-wider uppercase text-white">
+                STACKHOUSE
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-sm font-light leading-relaxed">
+              The Ultimate Burger Experience. Double smash-seared Aged British beef, molten cheese, house smoked sauce, and artisan toasted brioche. Made to order, delivered hot.
+            </p>
+            <div className="flex items-center space-x-4 pt-2">
+              <a href="#" className="p-2.5 rounded-xl glass-pill text-zinc-300 hover:text-orange-400 hover:border-orange-500/50 transition-colors" aria-label="Instagram">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className="p-2.5 rounded-xl glass-pill text-zinc-300 hover:text-orange-400 hover:border-orange-500/50 transition-colors" aria-label="Twitter">
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a href="#" className="p-2.5 rounded-xl glass-pill text-zinc-300 hover:text-orange-400 hover:border-orange-500/50 transition-colors" aria-label="Facebook">
+                <Facebook className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Explore Links */}
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-white">
+              Explore Menu
+            </h3>
+            <ul className="space-y-2 text-xs sm:text-sm font-light">
+              <li><a href="#buy-section" className="hover:text-orange-400 transition-colors">The Signature Firestack</a></li>
+              <li><a href="#craft-story" className="hover:text-orange-400 transition-colors">Craft & Sear Secrets</a></li>
+              <li><a href="#buy-section" className="hover:text-orange-400 transition-colors">Customize & Order</a></li>
+              <li><a href="#" className="hover:text-orange-400 transition-colors">Sides & Loaded Fries</a></li>
+            </ul>
+          </div>
+
+          {/* Support & Legal */}
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-white">
+              Support & Info
+            </h3>
+            <ul className="space-y-2 text-xs sm:text-sm font-light">
+              <li><a href="#" className="hover:text-orange-400 transition-colors">Store Locations</a></li>
+              <li><a href="#" className="hover:text-orange-400 transition-colors">Thermal Delivery Radius</a></li>
+              <li><a href="#" className="hover:text-orange-400 transition-colors">Allergen & Nutrition Guide</a></li>
+              <li><a href="#" className="hover:text-orange-400 transition-colors">Frequently Asked Questions</a></li>
+            </ul>
+          </div>
+
+          {/* Newsletter Box */}
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-white">
+              Get Hungry With Us.
+            </h3>
+            <p className="text-xs text-zinc-400 font-light">
+              Subscribe for secret drops, pop-up locations, and exclusive burger passes.
             </p>
 
-            <div className="pt-2">
-              <ContactCTA label="Contact the Garage" size="sm" variant="primary" />
-            </div>
-          </div>
-
-          {/* Nav Links Col 1 */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
-              GARAGE
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#anatomy" className="hover:text-white transition-colors">
-                  Vehicle Anatomy Explorer
-                </Link>
-              </li>
-              <li>
-                <Link href="#services" className="hover:text-white transition-colors">
-                  Specialist Services
-                </Link>
-              </li>
-              <li>
-                <Link href="#about" className="hover:text-white transition-colors">
-                  About Bell Automotive
-                </Link>
-              </li>
-              <li>
-                <Link href="#reviews" className="hover:text-white transition-colors">
-                  Customer Reviews
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Nav Links Col 2 */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
-              SUPPORT & ENQUIRIES
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  Contact Page
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact#faq" className="hover:text-white transition-colors">
-                  Service FAQs
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="https://www.google.com/search?q=bell+automotive+queensferry+reviews"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
+            <form onSubmit={handleSubscribe} className="space-y-2.5">
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  required
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder:text-zinc-500 focus:outline-none focus:border-orange-500 transition-colors"
+                />
+                <button
+                  type="submit"
+                  aria-label="Subscribe to newsletter"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white transition-colors flex items-center justify-center"
                 >
-                  Google Business Profile
-                </a>
-              </li>
-            </ul>
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              {subscribed && (
+                <div className="text-[11px] text-emerald-400 font-mono">
+                  ✓ Welcome to the STACKHOUSE Club!
+                </div>
+              )}
+            </form>
           </div>
 
-          {/* Contact Details Col */}
-          <div className="space-y-3 font-mono">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">
-              QUEENSFERRY GARAGE
-            </h4>
-            <div className="space-y-2 text-[11px] text-neutral-300">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 text-garage-accent shrink-0 mt-0.5" />
-                <span>
-                  The Forge, Dundas St, <br />
-                  Queensferry, Deeside CH5 1SZ
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-garage-accent shrink-0" />
-                <a href="tel:01244813321" className="hover:text-white">
-                  01244 813 321 / 07901 983 474
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-garage-accent shrink-0" />
-                <a href="mailto:gbellcars@hotmail.com" className="hover:text-white">
-                  gbellcars@hotmail.com
-                </a>
-              </div>
-            </div>
+        </div>
+
+        {/* Bottom Copyright & Allergen Disclaimer */}
+        <div className="pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 space-y-3 sm:space-y-0 text-center sm:text-left">
+          <div>
+            © {new Date().getFullYear()} STACKHOUSE Burgers Inc. All rights reserved.
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            <a href="#" className="hover:text-zinc-300">Privacy Policy</a>
+            <a href="#" className="hover:text-zinc-300">Terms of Service</a>
+            <a href="#" className="hover:text-zinc-300">Allergen Notice</a>
           </div>
         </div>
 
-        {/* Bottom Copyright & Legal */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] text-neutral-500">
-          <p>© {new Date().getFullYear()} Bell Automotive. All rights reserved.</p>
-          <p>Range Rover Dissection Interactive Showroom | Engineered in Queensferry, Wales</p>
-        </div>
       </div>
     </footer>
   );
