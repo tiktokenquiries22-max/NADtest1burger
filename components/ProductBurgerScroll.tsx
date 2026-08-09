@@ -176,9 +176,11 @@ export default function ProductBurgerScroll({
         return;
       }
 
+      // Map progress from 0.0 to 0.85 across frameCount, holding final frame from 0.85 to 1.0 before releasing
+      const normalizedProgress = Math.min(1, Math.max(0, progress / 0.85));
       const targetFrame = Math.min(
         frameCount - 1,
-        Math.max(0, Math.floor(progress * frameCount))
+        Math.max(0, Math.floor(normalizedProgress * frameCount))
       );
 
       if (targetFrame !== currentFrameRef.current) {
@@ -208,8 +210,8 @@ export default function ProductBurgerScroll({
   }, [drawFrame, frameCount, onScrollProgress, isReducedMotion]);
 
   return (
-    <div ref={containerRef} className="relative h-[500vh] w-full">
-      <div className="sticky top-0 h-[100vh] h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-zinc-950">
+    <div ref={containerRef} className="relative h-[480vh] w-full">
+      <div className="sticky top-0 h-[100vh] h-[100dvh] h-[100svh] w-full flex items-center justify-center overflow-hidden bg-zinc-950 z-10">
         {/* Full Viewport Ambient Glow Aura */}
         <div
           className="absolute w-[85vw] h-[85vh] max-w-[900px] max-h-[900px] rounded-full blur-[160px] opacity-30 pointer-events-none transition-colors duration-1000 animate-pulse-glow"
