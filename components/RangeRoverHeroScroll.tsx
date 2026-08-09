@@ -13,7 +13,6 @@ export default function RangeRoverHeroScroll() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
 
-  // Array storing preloaded Image objects
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameRef = useRef<number>(0);
 
@@ -41,7 +40,6 @@ export default function RangeRoverHeroScroll() {
       };
 
       img.onerror = () => {
-        // Fallback progress if image fails
         loadedCount++;
         setLoadProgress(Math.floor((loadedCount / TOTAL_FRAMES) * 100));
         if (loadedCount === TOTAL_FRAMES) {
@@ -55,7 +53,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function
+  // Canvas render function - full viewport coverage
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -70,11 +68,11 @@ export default function RangeRoverHeroScroll() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Dark luxury background studio fill
+    // Studio dark background fill across 100% canvas area
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Object-fitcontain calculation to keep car properly proportioned
+    // Dynamic viewport fit calculation
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
@@ -83,32 +81,33 @@ export default function RangeRoverHeroScroll() {
     let offsetX = 0;
     let offsetY = 0;
 
+    // Scale to fill full screen gracefully without letterbox padding gaps
     if (canvasAspect > imgAspect) {
-      drawHeight = height * 0.85;
+      drawHeight = height * 0.92;
       drawWidth = drawHeight * imgAspect;
       offsetX = (width - drawWidth) / 2;
       offsetY = (height - drawHeight) / 2;
     } else {
-      drawWidth = width * 0.92;
+      drawWidth = width * 0.98;
       drawHeight = drawWidth / imgAspect;
       offsetX = (width - drawWidth) / 2;
       offsetY = (height - drawHeight) / 2;
     }
 
-    // Draw frame onto canvas
+    // Draw car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
-    // Draw subtle vignette gradient overlay
+    // Vignette gradient across viewport edges
     const gradient = ctx.createRadialGradient(
       width / 2,
       height / 2,
-      Math.min(width, height) * 0.3,
+      Math.min(width, height) * 0.35,
       width / 2,
       height / 2,
-      Math.max(width, height) * 0.65
+      Math.max(width, height) * 0.7
     );
     gradient.addColorStop(0, 'rgba(11, 13, 15, 0)');
-    gradient.addColorStop(1, 'rgba(11, 13, 15, 0.85)');
+    gradient.addColorStop(1, 'rgba(11, 13, 15, 0.9)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
   }, []);
@@ -116,7 +115,6 @@ export default function RangeRoverHeroScroll() {
   // Update canvas on scroll
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      // Map scroll progress [0, 1] to frame index [0, TOTAL_FRAMES - 1]
       const frameIndex = Math.min(
         TOTAL_FRAMES - 1,
         Math.max(0, Math.floor(latest * (TOTAL_FRAMES - 1)))
@@ -131,13 +129,14 @@ export default function RangeRoverHeroScroll() {
     return () => unsubscribe();
   }, [scrollYProgress, renderFrame]);
 
-  // Canvas resize listener
+  // Canvas resize listener using devicePixelRatio
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
       renderFrame(currentFrameRef.current);
     };
 
@@ -154,13 +153,13 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[480vh] bg-garage-dark">
-      {/* Sticky Fullscreen Stage */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+    <section ref={containerRef} className="relative h-[480vh] w-full bg-garage-dark p-0 m-0 overflow-x-hidden">
+      {/* Sticky Fullscreen 100svh / 100vh Viewport Stage */}
+      <div className="sticky top-0 h-[100svh] min-h-[100vh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-cover block bg-garage-dark"
+          className="w-full h-full object-cover block bg-garage-dark p-0 m-0 border-none"
         />
 
         {/* Loading Progress Spinner */}
@@ -176,14 +175,14 @@ export default function RangeRoverHeroScroll() {
         {/* Dynamic Text Overlays */}
         <HeroTextOverlays progress={scrollYProgress} />
 
-        {/* Scroll Down Indicator (visible on initial hero screen) */}
+        {/* Scroll Down Indicator */}
         <motion.div
           style={{
             opacity: useTransform(scrollYProgress, [0, 0.08], [1, 0]),
           }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-400">
+          <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-400 text-shadow">
             SCROLL TO DISSECT
           </span>
           <ChevronDown className="w-4 h-4 text-white animate-bounce" />

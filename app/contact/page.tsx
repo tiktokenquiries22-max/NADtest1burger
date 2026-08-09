@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import { Phone, Mail, MapPin, Clock, ShieldCheck, CheckCircle2, ArrowLeft, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, ShieldCheck, CheckCircle2, ArrowLeft, Send, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ContactPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -19,9 +22,35 @@ export default function ContactPage() {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitted(true);
+      } else {
+        setErrorMessage(data.error || 'Failed to submit enquiry. Please try again.');
+      }
+    } catch (err: any) {
+      console.error('Contact form submission error:', err);
+      setErrorMessage('Network error occurred. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -69,10 +98,10 @@ export default function ContactPage() {
               <div className="p-4 glass-panel border border-white/10 text-xs text-neutral-300 font-light space-y-2">
                 <div className="flex items-center gap-2 font-bold text-white uppercase tracking-wider">
                   <ShieldCheck className="w-4 h-4 text-garage-accent" />
-                  <span>Direct Garage Communication</span>
+                  <span>Direct Sales & Service Enquiry</span>
                 </div>
                 <p className="leading-relaxed">
-                  Submitting this form does <strong>not</strong> lock in an online booking or take payment. We review your vehicle details and contact you personally to confirm timing and service requirements.
+                  Submitting this form notifies our garage team at <strong>igmfx@outlook.com</strong> immediately. We will review your vehicle details and contact you personally to confirm timing and service requirements.
                 </p>
               </div>
 
@@ -134,22 +163,34 @@ export default function ContactPage() {
                       <CheckCircle2 className="w-10 h-10" />
                     </div>
                     <h2 className="text-3xl font-black uppercase text-white tracking-tight">
-                      ENQUIRY RECEIVED
+                      ENQUIRY SENT SUCCESSFULLY
                     </h2>
                     <p className="text-sm text-neutral-300 font-light max-w-md mx-auto leading-relaxed">
-                      Thanks — your enquiry has been received. A member of our garage team will review your details and contact you shortly.
+                      Thanks — your enquiry has been sent to <strong>igmfx@outlook.com</strong>. A member of our garage team will review your details and contact you shortly.
                     </p>
 
                     <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-4">
                       <button
-                        onClick={() => setSubmitted(false)}
-                        className="px-6 py-3 bg-white/10 border border-white/20 text-xs font-mono uppercase text-white hover:bg-white/20"
+                        onClick={() => {
+                          setSubmitted(false);
+                          setFormData({
+                            fullName: '',
+                            email: '',
+                            phone: '',
+                            registration: '',
+                            model: '',
+                            serviceRequired: 'General Servicing & Diagnostics',
+                            preferredContact: 'Phone',
+                            message: '',
+                          });
+                        }}
+                        className="px-6 py-3 bg-white/10 border border-white/20 text-xs font-mono uppercase text-white hover:bg-white/20 transition-colors"
                       >
                         Submit Another Enquiry
                       </button>
                       <Link
                         href="/"
-                        className="px-6 py-3 bg-white text-black text-xs font-mono uppercase font-bold hover:bg-neutral-200"
+                        className="px-6 py-3 bg-white text-black text-xs font-mono uppercase font-bold hover:bg-neutral-200 transition-colors"
                       >
                         Back to Home
                       </Link>
@@ -159,12 +200,19 @@ export default function ContactPage() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="border-b border-white/10 pb-4 mb-6">
                       <h3 className="text-xl font-bold uppercase tracking-wider text-white">
-                        VEHICLE & CONTACT FORM
+                        VEHICLE &amp; CONTACT FORM
                       </h3>
                       <p className="text-xs text-neutral-400 font-light mt-1">
-                        Fill in your details below and we will contact you directly.
+                        Fill in your details below and our team will be notified immediately.
                       </p>
                     </div>
+
+                    {errorMessage && (
+                      <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5 shrink-0 text-rose-400" />
+                        <span>{errorMessage}</span>
+                      </div>
+                    )}
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
@@ -314,10 +362,20 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="w-full py-4 bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 shadow-lg"
+                      disabled={isSubmitting}
+                      className="w-full py-4 bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-neutral-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg"
                     >
-                      <Send className="w-4 h-4" />
-                      <span>Send Enquiry</span>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>SENDING ENQUIRY...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Send Enquiry</span>
+                        </>
+                      )}
                     </button>
                   </form>
                 )}
