@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - True Edge-to-Edge Cover Fill
+  // Canvas render function - True Full Screen Edge-to-Edge Zoom Cover Fill
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -73,25 +73,28 @@ export default function RangeRoverHeroScroll() {
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // True Full-Screen Cover Scaling Math
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
+
+    // Zoom multiplier to eliminate frame margins and make car HUGE & fill screen edge-to-edge
+    const isMobilePortrait = width / height < 1.0;
+    const zoomScale = isMobilePortrait ? 1.35 : 1.22;
 
     let drawWidth = width;
     let drawHeight = height;
 
     if (canvasAspect > imgAspect) {
-      drawWidth = width;
-      drawHeight = width / imgAspect;
+      drawWidth = width * zoomScale;
+      drawHeight = (width / imgAspect) * zoomScale;
     } else {
-      drawHeight = height;
-      drawWidth = height * imgAspect;
+      drawHeight = height * zoomScale;
+      drawWidth = (height * imgAspect) * zoomScale;
     }
 
     const offsetX = (width - drawWidth) / 2;
     const offsetY = (height - drawHeight) / 2;
 
-    // Draw full-screen car frame
+    // Draw zoomed full-screen car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
     // Subtle edge vignette
@@ -101,7 +104,7 @@ export default function RangeRoverHeroScroll() {
       Math.min(width, height) * 0.4,
       width / 2,
       height / 2,
-      Math.max(width, height) * 0.75
+      Math.max(width, height) * 0.8
     );
     gradient.addColorStop(0, 'rgba(11, 13, 15, 0)');
     gradient.addColorStop(1, 'rgba(11, 13, 15, 0.85)');
@@ -152,7 +155,7 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
+    <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark overflow-x-hidden">
       {/* Sticky Fullscreen Viewport Stage - Remains pinned to viewport throughout entire 500vh scroll sequence */}
       <div className="sticky top-0 h-screen h-[100dvh] h-[100svh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
