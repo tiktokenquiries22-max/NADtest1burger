@@ -16,6 +16,7 @@ export default function RangeRoverHeroScroll() {
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameRef = useRef<number>(0);
 
+  // Scroll tracking pinned to containerRef
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
@@ -68,7 +69,7 @@ export default function RangeRoverHeroScroll() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Dark luxury studio background fill
+    // Studio dark background fill
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
@@ -90,7 +91,7 @@ export default function RangeRoverHeroScroll() {
     const offsetX = (width - drawWidth) / 2;
     const offsetY = (height - drawHeight) / 2;
 
-    // Draw full-screen edge-to-edge car frame
+    // Draw full-screen car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
     // Subtle edge vignette
@@ -108,10 +109,11 @@ export default function RangeRoverHeroScroll() {
     ctx.fillRect(0, 0, width, height);
   }, []);
 
-  // Update canvas on scroll (Progressive drive from 0.0 to 0.88, hold at 100% completion till 1.0 before releasing)
+  // Update canvas on scroll
+  // Map scroll 0.0 -> 0.82 to frame sequence 0..250, and hold completed state from 0.82 -> 1.0 before releasing
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.88));
+      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.82));
       const frameIndex = Math.min(
         TOTAL_FRAMES - 1,
         Math.floor(normalizedProgress * (TOTAL_FRAMES - 1))
@@ -126,7 +128,7 @@ export default function RangeRoverHeroScroll() {
     return () => unsubscribe();
   }, [scrollYProgress, renderFrame]);
 
-  // Canvas resize handling for 100svh / 100dvh full viewport
+  // Canvas resize handling for full viewport
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -150,9 +152,9 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[450vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky True Fullscreen Viewport Stage (Pinned to viewport throughout scroll animation) */}
-      <div className="sticky top-0 h-[100vh] h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
+    <section ref={containerRef} className="relative h-[420vh] w-full p-0 m-0 bg-garage-dark">
+      {/* Sticky Fullscreen Stage - Pinned to viewport throughout scroll animation */}
+      <div className="sticky top-0 h-screen h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}

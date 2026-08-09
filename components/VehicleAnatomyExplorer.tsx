@@ -27,6 +27,7 @@ export default function VehicleAnatomyExplorer() {
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const currentFrameRef = useRef<number>(0);
 
+  // Scroll tracking pinned to containerRef
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
@@ -64,7 +65,7 @@ export default function VehicleAnatomyExplorer() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - Dominant Large Vehicle Scaling
+  // Canvas render function - Large Visually Dominant Vehicle Scaling
   const renderFrame = useCallback((frameIndex: number, isHoveredGlow: boolean) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -83,7 +84,7 @@ export default function VehicleAnatomyExplorer() {
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Large Visually Dominant Scaling Calculation
+    // Large Visually Dominant Scaling Calculation (92-96% occupancy)
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
@@ -131,10 +132,10 @@ export default function VehicleAnatomyExplorer() {
     }
   }, []);
 
-  // Update frame on scroll or drag (Progressive drive from 0.0 to 0.88, hold at 100% completion till 1.0 before releasing)
+  // Update frame on scroll or drag (Progressive drive from 0.0 to 0.82, hold at 100% completion till 1.0 before releasing)
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.88));
+      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.82));
       const scrollFrame = Math.floor(normalizedProgress * (TOTAL_FRAMES - 1));
       const targetFrame = Math.min(
         TOTAL_FRAMES - 1,
@@ -171,7 +172,7 @@ export default function VehicleAnatomyExplorer() {
     setIsDragging(false);
   };
 
-  // Canvas resize listener using devicePixelRatio for crisp high-dpi display
+  // Canvas resize listener
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -192,13 +193,13 @@ export default function VehicleAnatomyExplorer() {
     renderFrame(currentFrameRef.current, Boolean(hoveredPartId));
   }, [hoveredPartId, renderFrame]);
 
-  // Interactive Label visibility threshold
-  const labelsOpacity = useTransform(scrollYProgress, [0.20, 0.32], [0, 1]);
+  // Interactive Label visibility threshold (fades in early and stays visible throughout pinned section)
+  const labelsOpacity = useTransform(scrollYProgress, [0.15, 0.28, 0.98, 1.0], [0, 1, 1, 0]);
 
   return (
-    <section id="anatomy" ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky Full-Screen Stage (Pinned to viewport throughout scroll animation) */}
-      <div className="sticky top-0 h-[100vh] h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
+    <section id="anatomy" ref={containerRef} className="relative h-[480vh] w-full p-0 m-0 bg-garage-dark">
+      {/* Sticky Full-Screen Stage - Pinned to viewport throughout scroll animation */}
+      <div className="sticky top-0 h-screen h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Render Stage */}
         <canvas
           ref={canvasRef}
