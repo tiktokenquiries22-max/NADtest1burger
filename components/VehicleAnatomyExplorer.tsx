@@ -83,7 +83,7 @@ export default function VehicleAnatomyExplorer() {
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Large Visually Dominant Scaling Calculation (92-96% occupancy)
+    // Large Visually Dominant Scaling Calculation
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
@@ -131,10 +131,11 @@ export default function VehicleAnatomyExplorer() {
     }
   }, []);
 
-  // Update frame on scroll or drag
+  // Update frame on scroll or drag (Progressive drive from 0.0 to 0.88, hold at 100% completion till 1.0 before releasing)
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      const scrollFrame = Math.floor(latest * (TOTAL_FRAMES - 1));
+      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.88));
+      const scrollFrame = Math.floor(normalizedProgress * (TOTAL_FRAMES - 1));
       const targetFrame = Math.min(
         TOTAL_FRAMES - 1,
         Math.max(0, (scrollFrame + manualFrameOffset + TOTAL_FRAMES) % TOTAL_FRAMES)
@@ -192,12 +193,12 @@ export default function VehicleAnatomyExplorer() {
   }, [hoveredPartId, renderFrame]);
 
   // Interactive Label visibility threshold
-  const labelsOpacity = useTransform(scrollYProgress, [0.30, 0.40], [0, 1]);
+  const labelsOpacity = useTransform(scrollYProgress, [0.20, 0.32], [0, 1]);
 
   return (
-    <section id="anatomy" ref={containerRef} className="relative h-[550vh] w-full p-0 m-0 overflow-x-hidden bg-garage-dark">
-      {/* Sticky Full-Screen Stage */}
-      <div className="sticky top-0 h-[100svh] min-h-[100dvh] w-screen max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
+    <section id="anatomy" ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
+      {/* Sticky Full-Screen Stage (Pinned to viewport throughout scroll animation) */}
+      <div className="sticky top-0 h-[100vh] h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
         {/* Canvas Render Stage */}
         <canvas
           ref={canvasRef}
@@ -205,7 +206,7 @@ export default function VehicleAnatomyExplorer() {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`w-full h-full object-cover block bg-garage-dark ${
+          className={`w-full h-full h-[100dvh] object-cover block bg-garage-dark ${
             isDragging ? 'cursor-grabbing' : 'cursor-grab'
           }`}
         />

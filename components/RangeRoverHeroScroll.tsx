@@ -108,12 +108,13 @@ export default function RangeRoverHeroScroll() {
     ctx.fillRect(0, 0, width, height);
   }, []);
 
-  // Update canvas on scroll
+  // Update canvas on scroll (Progressive drive from 0.0 to 0.88, hold at 100% completion till 1.0 before releasing)
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
+      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.88));
       const frameIndex = Math.min(
         TOTAL_FRAMES - 1,
-        Math.max(0, Math.floor(latest * (TOTAL_FRAMES - 1)))
+        Math.floor(normalizedProgress * (TOTAL_FRAMES - 1))
       );
 
       if (frameIndex !== currentFrameRef.current) {
@@ -149,13 +150,13 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[480vh] w-full p-0 m-0 overflow-x-hidden bg-garage-dark">
-      {/* Sticky True Fullscreen Viewport Stage */}
-      <div className="sticky top-0 h-[100svh] min-h-[100dvh] w-screen max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
+    <section ref={containerRef} className="relative h-[450vh] w-full p-0 m-0 bg-garage-dark">
+      {/* Sticky True Fullscreen Viewport Stage (Pinned to viewport throughout scroll animation) */}
+      <div className="sticky top-0 h-[100vh] h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-cover block bg-garage-dark p-0 m-0 border-none"
+          className="w-full h-full h-[100dvh] object-cover block bg-garage-dark p-0 m-0 border-none"
         />
 
         {/* Loading Overlay */}

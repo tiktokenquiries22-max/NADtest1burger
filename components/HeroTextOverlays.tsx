@@ -17,13 +17,13 @@ export default function HeroTextOverlays({ progress }: HeroTextOverlaysProps) {
   const opacity2 = useTransform(progress, [0.22, 0.27, 0.42, 0.48], [0, 1, 1, 0]);
   const y2 = useTransform(progress, [0.22, 0.27, 0.42, 0.48], [30, 0, 0, -30]);
 
-  // Stage 3: [0.48 to 0.75]
-  const opacity3 = useTransform(progress, [0.47, 0.52, 0.70, 0.76], [0, 1, 1, 0]);
-  const y3 = useTransform(progress, [0.47, 0.52, 0.70, 0.76], [30, 0, 0, -30]);
+  // Stage 3: [0.48 to 0.72]
+  const opacity3 = useTransform(progress, [0.47, 0.52, 0.68, 0.74], [0, 1, 1, 0]);
+  const y3 = useTransform(progress, [0.47, 0.52, 0.68, 0.74], [30, 0, 0, -30]);
 
-  // Stage 4: [0.76 to 1.0]
-  const opacity4 = useTransform(progress, [0.75, 0.82, 0.95, 1], [0, 1, 1, 0]);
-  const y4 = useTransform(progress, [0.75, 0.82, 0.95, 1], [30, 0, 0, -20]);
+  // Stage 4: [0.74 to 1.0] (Holds 100% visible through end of pinned sequence)
+  const opacity4 = useTransform(progress, [0.72, 0.78, 0.95, 1], [0, 1, 1, 1]);
+  const y4 = useTransform(progress, [0.72, 0.78, 0.95, 1], [30, 0, 0, 0]);
 
   // Strong, professional text shadow utility for maximum legibility
   const textShadowClass = '[text-shadow:_0_4px_30px_rgba(0,0,0,0.95),_0_2px_12px_rgba(0,0,0,0.95),_0_0_40px_rgba(0,0,0,0.8)]';
