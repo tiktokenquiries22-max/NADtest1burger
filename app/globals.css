@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-gradient: linear-gradient(135deg, #1C1917 0%, #451A03 50%, #0C0A09 100%);
+  --theme-color: #EA580C;
+  --accent-color: #F97316;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-outfit), sans-serif;
+  color-scheme: dark;
+  background-color: #0c0a09;
+}
+
+body {
+  background: var(--bg-gradient);
+  color: #ffffff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+/* Subtle Film Noise Grain Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Custom Text Selection */
+::selection {
+  background-color: var(--theme-color);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: var(--theme-color);
+  color: #ffffff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(12, 10, 9, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  border: 2px solid rgba(12, 10, 9, 0.8);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-color);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Glassmorphism Styles */
+.glass-nav {
+  background: rgba(12, 10, 9, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel {
+  background: rgba(24, 24, 27, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-pill-active {
+  background: rgba(234, 88, 12, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(249, 115, 22, 0.6);
+  box-shadow: 0 0 25px rgba(234, 88, 12, 0.4);
+}
+
+/* Dynamic Glows & Shadows */
+.text-glow {
+  text-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
+}
+
+.text-glow-theme {
+  text-shadow: 0 0 35px var(--theme-color);
+}
+
+.glow-button {
+  box-shadow: 0 0 30px rgba(234, 88, 12, 0.5);
+  transition: all 0.3s ease;
+}
+
+.glow-button:hover {
+  box-shadow: 0 0 45px rgba(249, 115, 22, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Angled Hero Banner */
+.slant-banner {
+  clip-path: polygon(0 0, 100% 5%, 100% 100%, 0 95%);
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s infinite ease-in-out;
+}
