@@ -1,48 +1,27 @@
-import type { Metadata, Viewport } from "next";
-import { Outfit } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Outfit } from 'next/font/google';
+import './globals.css';
 
 const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "STACKHOUSE | Burgers Worth Scrolling For",
-  description: "Experience luxury smash burgers presented with cinematic scrollytelling. Double smash beef, molten cheese, secret house sauce, toasted brioche.",
-  keywords: ["burgers", "smash burger", "gourmet burger", "STACKHOUSE", "luxury burger", "food advertising", "scrollytelling"],
-  authors: [{ name: "STACKHOUSE Culinary Studios" }],
-  openGraph: {
-    title: "STACKHOUSE | Burgers Worth Scrolling For",
-    description: "Big. Smashed. Unapologetic. Explore our flagship smash burgers with interactive 3D assembly scrollytelling.",
-    type: "website",
-    locale: "en_GB",
-    siteName: "STACKHOUSE Burgers",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "STACKHOUSE | Luxury Smash Burgers",
-    description: "Burgers Worth Scrolling For. Made to order. Flame-grilled to perfection.",
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: "#0c0a09",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 5,
+  title: 'Range Rover Dissection | Bell Automotive | Land Rover & 4x4 Specialists',
+  description: 'Explore the engineering behind the Range Rover. Discover individual vehicle components, understand their function, and contact Bell Automotive garage in Queensferry to arrange your service.',
+  keywords: ['Range Rover', 'Land Rover Specialist', 'Bell Automotive', 'Queensferry Garage', 'Deeside 4x4', 'Vehicle Dissection', 'Autologic Diagnostics'],
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={outfit.variable}>
-      <body className={`${outfit.className} antialiased selection:bg-orange-600 selection:text-white`}>
+    <html lang="en" className={`${outfit.variable} scroll-smooth`}>
+      <body className="bg-garage-dark text-white font-outfit antialiased selection:bg-garage-accent/30 selection:text-white">
         {children}
       </body>
     </html>
