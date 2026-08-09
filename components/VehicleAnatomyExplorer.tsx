@@ -64,7 +64,7 @@ export default function VehicleAnatomyExplorer() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function
+  // Canvas render function - Dominant Large Vehicle Scaling
   const renderFrame = useCallback((frameIndex: number, isHoveredGlow: boolean) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -83,42 +83,40 @@ export default function VehicleAnatomyExplorer() {
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Image fit calculation
+    // Large Visually Dominant Scaling Calculation (92-96% occupancy)
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
     let drawWidth = width;
     let drawHeight = height;
-    let offsetX = 0;
-    let offsetY = 0;
 
     if (canvasAspect > imgAspect) {
-      drawHeight = height * 0.82;
+      drawHeight = height * 0.95;
       drawWidth = drawHeight * imgAspect;
-      offsetX = (width - drawWidth) / 2;
-      offsetY = (height - drawHeight) / 2;
     } else {
-      drawWidth = width * 0.90;
+      drawWidth = width * 0.96;
       drawHeight = drawWidth / imgAspect;
-      offsetX = (width - drawWidth) / 2;
-      offsetY = (height - drawHeight) / 2;
     }
+
+    const offsetX = (width - drawWidth) / 2;
+    const offsetY = (height - drawHeight) / 2;
 
     // Glow highlight if component is hovered
     if (isHoveredGlow) {
       ctx.shadowColor = '#22d3ee';
-      ctx.shadowBlur = 30;
+      ctx.shadowBlur = 35;
     } else {
       ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
     }
 
+    // Draw large dominant car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
     // Technical Blueprint Grid Overlay
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
     ctx.lineWidth = 1;
-    const gridSize = 60;
+    const gridSize = 70;
     for (let x = 0; x < width; x += gridSize) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
@@ -172,13 +170,14 @@ export default function VehicleAnatomyExplorer() {
     setIsDragging(false);
   };
 
-  // Canvas resize
+  // Canvas resize listener using devicePixelRatio for crisp high-dpi display
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
       renderFrame(currentFrameRef.current, Boolean(hoveredPartId));
     };
 
@@ -192,13 +191,13 @@ export default function VehicleAnatomyExplorer() {
     renderFrame(currentFrameRef.current, Boolean(hoveredPartId));
   }, [hoveredPartId, renderFrame]);
 
-  // Interactive Label visibility threshold (show labels when exploded in middle/end scroll)
-  const labelsOpacity = useTransform(scrollYProgress, [0.35, 0.45], [0, 1]);
+  // Interactive Label visibility threshold
+  const labelsOpacity = useTransform(scrollYProgress, [0.30, 0.40], [0, 1]);
 
   return (
-    <section id="anatomy" ref={containerRef} className="relative h-[550vh] bg-garage-dark">
-      {/* Sticky Stage */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+    <section id="anatomy" ref={containerRef} className="relative h-[550vh] w-full p-0 m-0 overflow-x-hidden bg-garage-dark">
+      {/* Sticky Full-Screen Stage */}
+      <div className="sticky top-0 h-[100svh] min-h-[100dvh] w-screen max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
         {/* Canvas Render Stage */}
         <canvas
           ref={canvasRef}
@@ -222,24 +221,24 @@ export default function VehicleAnatomyExplorer() {
         )}
 
         {/* Top Header Overlay */}
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 text-center pointer-events-none z-20 max-w-2xl px-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 mb-2 border border-white/10 bg-black/50 backdrop-blur-md text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-garage-accent">
+        <div className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 text-center pointer-events-none z-20 max-w-2xl px-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 mb-2 border border-white/20 bg-black/60 backdrop-blur-md text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-garage-accent">
             <Sparkles className="w-3.5 h-3.5 text-garage-accent" />
             <span>INTERACTIVE VEHICLE ANATOMY EXPLORER</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white drop-shadow-lg">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white drop-shadow-2xl">
             EXPLORE THE ANATOMY
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-neutral-300 font-light tracking-wider">
-            Rotate it. Dissect it. Click components to learn how Bell Automotive maintains them.
+          <p className="mt-2 text-xs sm:text-sm text-neutral-200 font-light tracking-wider drop-shadow-md">
+            Rotate it. Dissect it. Hover or tap components to reveal details.
           </p>
         </div>
 
         {/* Bottom Control Bar */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 px-4 py-2 glass-panel border border-white/10 text-xs font-mono text-neutral-300 pointer-events-auto">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 px-5 py-2.5 glass-panel border border-white/15 text-xs font-mono text-neutral-200 pointer-events-auto shadow-2xl">
           <div className="flex items-center gap-2">
             <MoveHorizontal className="w-4 h-4 text-garage-accent animate-pulse" />
-            <span>DRAG TO ROTATE VEHICLE</span>
+            <span className="uppercase">DRAG TO ROTATE VEHICLE</span>
           </div>
           <span className="text-neutral-600">|</span>
           <button
@@ -248,7 +247,7 @@ export default function VehicleAnatomyExplorer() {
               currentFrameRef.current = 0;
               renderFrame(0, false);
             }}
-            className="flex items-center gap-1.5 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 hover:text-garage-accent transition-colors uppercase"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>RESET VIEW</span>

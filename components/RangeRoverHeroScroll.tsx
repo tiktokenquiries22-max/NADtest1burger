@@ -53,7 +53,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - full viewport coverage
+  // Canvas render function - True Edge-to-Edge Cover Fill
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -68,46 +68,42 @@ export default function RangeRoverHeroScroll() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Studio dark background fill across 100% canvas area
+    // Dark luxury studio background fill
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Dynamic viewport fit calculation
+    // True Full-Screen Cover Scaling Math
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
     let drawWidth = width;
     let drawHeight = height;
-    let offsetX = 0;
-    let offsetY = 0;
 
-    // Scale to fill full screen gracefully without letterbox padding gaps
     if (canvasAspect > imgAspect) {
-      drawHeight = height * 0.92;
-      drawWidth = drawHeight * imgAspect;
-      offsetX = (width - drawWidth) / 2;
-      offsetY = (height - drawHeight) / 2;
+      drawWidth = width;
+      drawHeight = width / imgAspect;
     } else {
-      drawWidth = width * 0.98;
-      drawHeight = drawWidth / imgAspect;
-      offsetX = (width - drawWidth) / 2;
-      offsetY = (height - drawHeight) / 2;
+      drawHeight = height;
+      drawWidth = height * imgAspect;
     }
 
-    // Draw car frame
+    const offsetX = (width - drawWidth) / 2;
+    const offsetY = (height - drawHeight) / 2;
+
+    // Draw full-screen edge-to-edge car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
-    // Vignette gradient across viewport edges
+    // Subtle edge vignette
     const gradient = ctx.createRadialGradient(
       width / 2,
       height / 2,
-      Math.min(width, height) * 0.35,
+      Math.min(width, height) * 0.4,
       width / 2,
       height / 2,
-      Math.max(width, height) * 0.7
+      Math.max(width, height) * 0.75
     );
     gradient.addColorStop(0, 'rgba(11, 13, 15, 0)');
-    gradient.addColorStop(1, 'rgba(11, 13, 15, 0.9)');
+    gradient.addColorStop(1, 'rgba(11, 13, 15, 0.85)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
   }, []);
@@ -129,7 +125,7 @@ export default function RangeRoverHeroScroll() {
     return () => unsubscribe();
   }, [scrollYProgress, renderFrame]);
 
-  // Canvas resize listener using devicePixelRatio
+  // Canvas resize handling for 100svh / 100dvh full viewport
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -153,21 +149,21 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[480vh] w-full bg-garage-dark p-0 m-0 overflow-x-hidden">
-      {/* Sticky Fullscreen 100svh / 100vh Viewport Stage */}
-      <div className="sticky top-0 h-[100svh] min-h-[100vh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
+    <section ref={containerRef} className="relative h-[480vh] w-full p-0 m-0 overflow-x-hidden bg-garage-dark">
+      {/* Sticky True Fullscreen Viewport Stage */}
+      <div className="sticky top-0 h-[100svh] min-h-[100dvh] w-screen max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
           className="w-full h-full object-cover block bg-garage-dark p-0 m-0 border-none"
         />
 
-        {/* Loading Progress Spinner */}
+        {/* Loading Overlay */}
         {!imagesLoaded && (
           <div className="absolute inset-0 bg-garage-dark z-30 flex flex-col items-center justify-center gap-4">
             <div className="w-16 h-16 border-2 border-white/10 border-t-garage-accent rounded-full animate-spin" />
             <div className="text-xs font-mono tracking-widest text-neutral-400 uppercase">
-              LOADING RANGE ROVER ANATOMY SEQUENCE... {loadProgress}%
+              LOADING RANGE ROVER HERO SEQUENCE... {loadProgress}%
             </div>
           </div>
         )}
@@ -182,7 +178,7 @@ export default function RangeRoverHeroScroll() {
           }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-400 text-shadow">
+          <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-neutral-300 text-shadow">
             SCROLL TO DISSECT
           </span>
           <ChevronDown className="w-4 h-4 text-white animate-bounce" />
