@@ -25,7 +25,7 @@ export default function ProductBurgerScroll({
 
   const frameCount = product.frameCount || 251;
 
-  // Canvas fit-contain drawing logic
+  // Canvas fit-contain drawing logic (Full-Screen Hero Viewport)
   const drawFrame = useCallback(
     (frameIndex: number) => {
       const canvas = canvasRef.current;
@@ -50,7 +50,7 @@ export default function ProductBurgerScroll({
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-      // Math for contain fit
+      // Math for contain fit covering full viewport
       const imgWidth = img.naturalWidth;
       const imgHeight = img.naturalHeight;
       const imgAspect = imgWidth / imgHeight;
@@ -61,8 +61,8 @@ export default function ProductBurgerScroll({
       let offsetX = 0;
       let offsetY = 0;
 
-      // Fit burger comfortably with breathing room
-      const scaleFactor = window.innerWidth < 640 ? 0.88 : 0.82;
+      // Full-screen fit scale factor
+      const scaleFactor = window.innerWidth < 640 ? 0.95 : 0.92;
 
       if (canvasAspect > imgAspect) {
         drawHeight = canvasHeight * scaleFactor;
@@ -210,9 +210,9 @@ export default function ProductBurgerScroll({
   return (
     <div ref={containerRef} className="relative h-[500vh] w-full">
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-        {/* Ambient Glow Aura */}
+        {/* Full-Screen Ambient Glow Aura */}
         <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[140px] opacity-30 pointer-events-none transition-colors duration-1000 animate-pulse-glow"
+          className="absolute w-[800px] h-[800px] rounded-full blur-[160px] opacity-35 pointer-events-none transition-colors duration-1000 animate-pulse-glow"
           style={{ backgroundColor: product.themeColor }}
         />
 
@@ -239,7 +239,7 @@ export default function ProductBurgerScroll({
           )}
         </AnimatePresence>
 
-        {/* Hero Canvas */}
+        {/* Full Viewport Hero Canvas */}
         <canvas
           ref={canvasRef}
           className="w-full h-full object-contain relative z-10 transition-opacity duration-500"

@@ -2,23 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Menu, X, Flame, MapPin, Sparkles } from "lucide-react";
+import { ShoppingBag, Menu, X, Flame } from "lucide-react";
 import { Product } from "@/data/products";
 
 interface NavbarProps {
   currentProduct: Product;
   cartCount: number;
   onOpenCart: () => void;
-  onSelectProduct: (index: number) => void;
-  products: Product[];
+  onSelectProduct?: (index: number) => void;
+  products?: Product[];
 }
 
 export default function Navbar({
   currentProduct,
   cartCount,
   onOpenCart,
-  onSelectProduct,
-  products,
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -48,7 +46,6 @@ export default function Navbar({
               className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-lg"
               style={{ backgroundColor: currentProduct.themeColor }}
             >
-              {/* Custom Burger Stack SVG Icon */}
               <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 8C4 5.79086 5.79086 4 8 4H16C18.2091 4 20 5.79086 20 8V8C20 8.55228 19.5523 9 19 9H5C4.44772 9 4 8.55228 4 8V8Z" fill="currentColor" fillOpacity="0.2"/>
                 <path d="M3 13H21" strokeWidth="2.8"/>
@@ -68,32 +65,23 @@ export default function Navbar({
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center space-x-8">
-            {products.map((prod, idx) => (
-              <button
-                key={prod.id}
-                onClick={() => onSelectProduct(idx)}
-                className={`text-sm font-semibold tracking-wide transition-all duration-300 relative py-1 uppercase ${
-                  currentProduct.id === prod.id
-                    ? "text-white"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                {prod.name.replace("The ", "")}
-                {currentProduct.id === prod.id && (
-                  <motion.div
-                    layoutId="activeNavIndicator"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                    style={{ backgroundColor: currentProduct.accentColor }}
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="text-sm font-semibold tracking-wide text-white hover:text-orange-400 transition-colors uppercase"
+            >
+              THE EXPERIENCE
+            </button>
             <a
               href="#craft-story"
-              className="text-sm font-semibold tracking-wide text-zinc-400 hover:text-white transition-colors duration-200"
+              className="text-sm font-semibold tracking-wide text-zinc-400 hover:text-white transition-colors uppercase"
             >
-              CRAFT & SECRET
+              CRAFT & SECRETS
+            </a>
+            <a
+              href="#buy-section"
+              className="text-sm font-semibold tracking-wide text-zinc-400 hover:text-white transition-colors uppercase"
+            >
+              CUSTOMIZE & ORDER
             </a>
           </nav>
 
@@ -152,34 +140,29 @@ export default function Navbar({
             className="fixed inset-x-0 top-[72px] z-40 bg-zinc-950/95 backdrop-blur-2xl border-b border-white/10 px-6 py-8 md:hidden shadow-2xl"
           >
             <div className="flex flex-col space-y-6">
-              <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
-                Select Your Burger
-              </span>
-              <div className="grid gap-3">
-                {products.map((prod, idx) => (
-                  <button
-                    key={prod.id}
-                    onClick={() => {
-                      onSelectProduct(idx);
-                      setMobileMenuOpen(false);
-                    }}
-                    className={`flex items-center justify-between p-4 rounded-xl text-left border transition-all ${
-                      currentProduct.id === prod.id
-                        ? "bg-white/10 border-orange-500 text-white font-bold"
-                        : "bg-white/5 border-white/5 text-zinc-300"
-                    }`}
-                  >
-                    <div>
-                      <div className="text-base">{prod.name}</div>
-                      <div className="text-xs text-zinc-400 font-normal">{prod.price} • {prod.subName}</div>
-                    </div>
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: prod.themeColor }}
-                    />
-                  </button>
-                ))}
-              </div>
+              <button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  setMobileMenuOpen(false);
+                }}
+                className="text-left text-base font-bold uppercase text-white hover:text-orange-400"
+              >
+                THE EXPERIENCE
+              </button>
+              <a
+                href="#craft-story"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-left text-base font-bold uppercase text-zinc-300 hover:text-white"
+              >
+                CRAFT & SECRETS
+              </a>
+              <a
+                href="#buy-section"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-left text-base font-bold uppercase text-zinc-300 hover:text-white"
+              >
+                CUSTOMIZE & ORDER
+              </a>
 
               <div className="pt-4 border-t border-white/10 flex flex-col space-y-3">
                 <a

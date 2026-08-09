@@ -9,7 +9,7 @@ import ProductTextOverlays from "@/components/ProductTextOverlays";
 import ProductDetails from "@/components/ProductDetails";
 import BuyNowSection from "@/components/BuyNowSection";
 import Footer from "@/components/Footer";
-import { ChevronLeft, ChevronRight, ShoppingBag, X, Trash2, ArrowRight, Flame } from "lucide-react";
+import { ShoppingBag, X, Trash2, ArrowRight, Flame } from "lucide-react";
 
 export interface CartItem {
   product: Product;
@@ -18,35 +18,18 @@ export interface CartItem {
 }
 
 export default function Home() {
-  const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
 
-  const currentProduct = products[currentProductIndex];
+  const currentProduct = products[0];
 
-  // Dynamically update CSS custom variables when product changes
+  // Dynamically update CSS custom variables
   useEffect(() => {
     document.documentElement.style.setProperty("--bg-gradient", currentProduct.gradient);
     document.documentElement.style.setProperty("--theme-color", currentProduct.themeColor);
     document.documentElement.style.setProperty("--accent-color", currentProduct.accentColor);
   }, [currentProduct]);
-
-  // Product Navigation Handlers
-  const handleNextProduct = () => {
-    const nextIdx = (currentProductIndex + 1) % products.length;
-    switchProduct(nextIdx);
-  };
-
-  const handlePrevProduct = () => {
-    const prevIdx = (currentProductIndex - 1 + products.length) % products.length;
-    switchProduct(prevIdx);
-  };
-
-  const switchProduct = (idx: number) => {
-    setCurrentProductIndex(idx);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   // Cart Handlers
   const handleAddToCart = (product: Product, quantity: number, addons: string[]) => {
@@ -76,8 +59,6 @@ export default function Home() {
     }, 0)
     .toFixed(2);
 
-  const nextProduct = products[(currentProductIndex + 1) % products.length];
-
   return (
     <main className="min-h-screen bg-zinc-950 text-white relative selection:bg-orange-600 selection:text-white">
       {/* Fixed Navbar */}
@@ -85,109 +66,57 @@ export default function Home() {
         currentProduct={currentProduct}
         cartCount={totalCartItems}
         onOpenCart={() => setCartOpen(true)}
-        onSelectProduct={switchProduct}
-        products={products}
       />
 
-      {/* Navigation Mechanism A: Floating Left / Right Side Arrows */}
-      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-30 hidden sm:block">
-        <button
-          onClick={handlePrevProduct}
-          aria-label="Previous Burger"
-          className="p-3 rounded-full glass-panel hover:border-orange-500/50 text-white transition-all duration-300 hover:scale-110 active:scale-95 group shadow-2xl"
-        >
-          <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
-        </button>
-      </div>
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-30 hidden sm:block">
-        <button
-          onClick={handleNextProduct}
-          aria-label="Next Burger"
-          className="p-3 rounded-full glass-panel hover:border-orange-500/50 text-white transition-all duration-300 hover:scale-110 active:scale-95 group shadow-2xl"
-        >
-          <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-      </div>
+      {/* Hero Canvas & Interactive Scrollytelling */}
+      <div className="relative">
+        <ProductBurgerScroll
+          product={currentProduct}
+          onScrollProgress={setScrollProgress}
+        />
+        <ProductTextOverlays
+          product={currentProduct}
+          scrollProgress={scrollProgress}
+        />
 
-      {/* Navigation Mechanism B: Fixed Bottom Product Selector Pill */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30">
-        <div className="glass-panel p-1.5 rounded-full border border-white/20 shadow-2xl flex items-center space-x-1 sm:space-x-2">
-          {products.map((prod, idx) => {
-            const active = currentProductIndex === idx;
-            return (
-              <button
-                key={prod.id}
-                onClick={() => switchProduct(idx)}
-                className={`px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-full text-xs font-bold uppercase transition-all duration-300 flex items-center space-x-2 ${
-                  active ? "glass-pill-active text-white" : "text-zinc-400 hover:text-white"
-                }`}
+        {/* Product Details & Craft Section */}
+        <ProductDetails product={currentProduct} />
+
+        {/* Commerce Section */}
+        <BuyNowSection product={currentProduct} onAddToCart={handleAddToCart} />
+
+        {/* Bottom Editorial Call To Action Banner */}
+        <section className="relative py-20 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 border-t border-b border-white/10 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <a
+              href="#buy-section"
+              className="w-full max-w-4xl mx-auto glass-panel p-8 sm:p-14 rounded-3xl border border-white/15 hover:border-orange-500/50 transition-all duration-500 group text-left relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 block"
+            >
+              <div
+                className="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity pointer-events-none"
+                style={{ backgroundColor: currentProduct.themeColor }}
+              />
+              <div>
+                <span className="text-xs font-mono tracking-widest text-orange-400 uppercase mb-2 block">
+                  READY FOR THE FIRST BITE?
+                </span>
+                <h3 className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight group-hover:translate-x-2 transition-transform">
+                  CUSTOMIZE YOUR BURGER NOW →
+                </h3>
+                <p className="text-sm text-zinc-400 mt-2 font-light">
+                  {currentProduct.name} • {currentProduct.price} • Made To Order
+                </p>
+              </div>
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform shadow-2xl"
+                style={{ backgroundColor: currentProduct.themeColor }}
               >
-                <span className="font-mono text-[10px] opacity-70">0{idx + 1}</span>
-                <span>{prod.name.replace("The ", "")}</span>
-              </button>
-            );
-          })}
-        </div>
+                <ArrowRight className="w-8 h-8" />
+              </div>
+            </a>
+          </div>
+        </section>
       </div>
-
-      {/* Animated Product Hero Canvas & Text Overlays */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentProduct.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative"
-        >
-          <ProductBurgerScroll
-            product={currentProduct}
-            onScrollProgress={setScrollProgress}
-          />
-          <ProductTextOverlays
-            product={currentProduct}
-            scrollProgress={scrollProgress}
-          />
-
-          {/* Product Details Section */}
-          <ProductDetails product={currentProduct} />
-
-          {/* Commerce Section */}
-          <BuyNowSection product={currentProduct} onAddToCart={handleAddToCart} />
-
-          {/* Navigation Mechanism C: Editorial Next Burger CTA Banner */}
-          <section className="relative py-20 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 border-t border-b border-white/10 overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <button
-                onClick={handleNextProduct}
-                className="w-full max-w-4xl mx-auto glass-panel p-8 sm:p-14 rounded-3xl border border-white/15 hover:border-orange-500/50 transition-all duration-500 group text-left relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6"
-              >
-                <div
-                  className="absolute inset-0 opacity-10 group-hover:opacity-25 transition-opacity pointer-events-none"
-                  style={{ backgroundColor: nextProduct.themeColor }}
-                />
-                <div>
-                  <span className="text-xs font-mono tracking-widest text-orange-400 uppercase mb-2 block">
-                    READY FOR ANOTHER BITE?
-                  </span>
-                  <h3 className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight group-hover:translate-x-2 transition-transform">
-                    EXPLORE {nextProduct.name} →
-                  </h3>
-                  <p className="text-sm text-zinc-400 mt-2 font-light">
-                    {nextProduct.subName} • {nextProduct.price}
-                  </p>
-                </div>
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform shadow-2xl"
-                  style={{ backgroundColor: nextProduct.themeColor }}
-                >
-                  <ArrowRight className="w-8 h-8" />
-                </div>
-              </button>
-            </div>
-          </section>
-        </motion.div>
-      </AnimatePresence>
 
       {/* Cart Drawer Overlay */}
       <AnimatePresence>
