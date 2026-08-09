@@ -132,10 +132,10 @@ export default function VehicleAnatomyExplorer() {
     }
   }, []);
 
-  // Update frame on scroll or drag (Progressive drive from 0.0 to 0.82, hold at 100% completion till 1.0 before releasing)
+  // Update frame on scroll or drag (Progressive drive from 0.0 to 0.85, hold at 100% completion till 1.0 before releasing)
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.82));
+      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.85));
       const scrollFrame = Math.floor(normalizedProgress * (TOTAL_FRAMES - 1));
       const targetFrame = Math.min(
         TOTAL_FRAMES - 1,
@@ -197,9 +197,9 @@ export default function VehicleAnatomyExplorer() {
   const labelsOpacity = useTransform(scrollYProgress, [0.15, 0.28, 0.98, 1.0], [0, 1, 1, 0]);
 
   return (
-    <section id="anatomy" ref={containerRef} className="relative h-[480vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky Full-Screen Stage - Pinned to viewport throughout scroll animation */}
-      <div className="sticky top-0 h-screen h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
+    <section id="anatomy" ref={containerRef} className="relative h-[550vh] w-full p-0 m-0 bg-garage-dark">
+      {/* Sticky Full-Screen Stage - Remains pinned to viewport throughout entire 550vh scroll sequence */}
+      <div className="sticky top-0 h-screen h-[100dvh] h-[100svh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Render Stage */}
         <canvas
           ref={canvasRef}

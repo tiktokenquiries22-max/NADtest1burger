@@ -110,10 +110,10 @@ export default function RangeRoverHeroScroll() {
   }, []);
 
   // Update canvas on scroll
-  // Map scroll 0.0 -> 0.82 to frame sequence 0..250, and hold completed state from 0.82 -> 1.0 before releasing
+  // Map scroll 0.0 -> 0.85 to frame sequence 0..250, and hold completed state from 0.85 -> 1.0 before releasing
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (latest) => {
-      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.82));
+      const normalizedProgress = Math.min(1, Math.max(0, latest / 0.85));
       const frameIndex = Math.min(
         TOTAL_FRAMES - 1,
         Math.floor(normalizedProgress * (TOTAL_FRAMES - 1))
@@ -152,9 +152,9 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[420vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky Fullscreen Stage - Pinned to viewport throughout scroll animation */}
-      <div className="sticky top-0 h-screen h-[100dvh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
+    <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
+      {/* Sticky Fullscreen Viewport Stage - Remains pinned to viewport throughout entire 500vh scroll sequence */}
+      <div className="sticky top-0 h-screen h-[100dvh] h-[100svh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
