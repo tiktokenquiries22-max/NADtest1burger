@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - True Full Screen Edge-to-Edge Zoom Cover Fill
+  // Canvas render function - True Full Screen Edge-to-Edge Cover Sizing
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -63,6 +63,16 @@ export default function RangeRoverHeroScroll() {
 
     const img = imagesRef.current[frameIndex];
     if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    // Synchronize canvas internal width/height to device viewport
+    const dpr = window.devicePixelRatio || 1;
+    const targetWidth = window.innerWidth * dpr;
+    const targetHeight = window.innerHeight * dpr;
+
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+    }
 
     const width = canvas.width;
     const height = canvas.height;
@@ -76,9 +86,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Zoom multiplier to eliminate frame margins and make car HUGE & fill screen edge-to-edge
+    // Zoom scale factor to ensure 100% edge-to-edge fill with zero whitespace or margins
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 1.35 : 1.22;
+    const zoomScale = isMobilePortrait ? 1.45 : 1.28;
 
     let drawWidth = width;
     let drawHeight = height;
@@ -131,20 +141,19 @@ export default function RangeRoverHeroScroll() {
     return () => unsubscribe();
   }, [scrollYProgress, renderFrame]);
 
-  // Canvas resize handling for full viewport
+  // Canvas resize listener
   useEffect(() => {
     const handleResize = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
       renderFrame(currentFrameRef.current);
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
   }, [renderFrame]);
 
   // Initial draw once loaded
@@ -156,12 +165,12 @@ export default function RangeRoverHeroScroll() {
 
   return (
     <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky Fullscreen Viewport Stage - Remains pinned to viewport throughout entire 500vh scroll sequence */}
-      <div className="sticky top-0 h-screen h-[100dvh] h-[100svh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
+      {/* Sticky Fullscreen Viewport Stage - Pinned to 100% viewport throughout entire 500vh scroll sequence */}
+      <div className="sticky top-0 left-0 right-0 h-screen min-h-[100dvh] h-[100dvh] h-[100svh] w-full w-screen max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full h-[100dvh] object-cover block bg-garage-dark p-0 m-0 border-none"
+          className="absolute inset-0 w-full h-full min-h-[100dvh] object-cover block bg-garage-dark p-0 m-0 border-none"
         />
 
         {/* Loading Overlay */}
