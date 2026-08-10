@@ -86,9 +86,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Aggressive Zoom multiplier to eliminate all internal image padding and make car fill 100% of the screen
+    // Zoom multiplier (2.45x desktop, 2.20x mobile) to make Range Rover massive and fill 100% of the screen
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 2.15 : 1.70;
+    const zoomScale = isMobilePortrait ? 2.20 : 2.45;
 
     let drawWidth = width;
     let drawHeight = height;

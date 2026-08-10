@@ -84,7 +84,7 @@ export default function VehicleAnatomyExplorer() {
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Large Visually Dominant Scaling Calculation (92-96% occupancy)
+    // Large Visually Dominant Scaling Calculation (95-98% occupancy)
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
@@ -92,10 +92,10 @@ export default function VehicleAnatomyExplorer() {
     let drawHeight = height;
 
     if (canvasAspect > imgAspect) {
-      drawHeight = height * 0.95;
+      drawHeight = height * 0.96;
       drawWidth = drawHeight * imgAspect;
     } else {
-      drawWidth = width * 0.96;
+      drawWidth = width * 0.98;
       drawHeight = drawWidth / imgAspect;
     }
 
@@ -193,8 +193,8 @@ export default function VehicleAnatomyExplorer() {
     renderFrame(currentFrameRef.current, Boolean(hoveredPartId));
   }, [hoveredPartId, renderFrame]);
 
-  // Interactive Label visibility threshold (fades in early and stays visible throughout pinned section)
-  const labelsOpacity = useTransform(scrollYProgress, [0.15, 0.28, 0.98, 1.0], [0, 1, 1, 0]);
+  // Interactive Label visibility — Visible immediately from top of section (0.0 to 0.98)
+  const labelsOpacity = useTransform(scrollYProgress, [0.0, 0.05, 0.98, 1.0], [1, 1, 1, 0]);
 
   return (
     <section id="anatomy" ref={containerRef} className="relative h-[550vh] w-full p-0 m-0 bg-garage-dark">
