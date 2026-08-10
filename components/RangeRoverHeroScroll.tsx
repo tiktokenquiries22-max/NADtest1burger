@@ -155,7 +155,7 @@ export default function RangeRoverHeroScroll() {
   }, [imagesLoaded, renderFrame]);
 
   return (
-    <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark overflow-x-hidden">
+    <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
       {/* Sticky Fullscreen Viewport Stage - Remains pinned to viewport throughout entire 500vh scroll sequence */}
       <div className="sticky top-0 h-screen h-[100dvh] h-[100svh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
