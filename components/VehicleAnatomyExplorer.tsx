@@ -65,7 +65,7 @@ export default function VehicleAnatomyExplorer() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - Large Visually Dominant Vehicle Scaling
+  // Canvas render function - Massive Full-Screen Viewport Fill
   const renderFrame = useCallback((frameIndex: number, isHoveredGlow: boolean) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -74,6 +74,16 @@ export default function VehicleAnatomyExplorer() {
 
     const img = imagesRef.current[frameIndex];
     if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    // Synchronize canvas internal width/height to device viewport
+    const dpr = window.devicePixelRatio || 1;
+    const targetWidth = window.innerWidth * dpr;
+    const targetHeight = window.innerHeight * dpr;
+
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+    }
 
     const width = canvas.width;
     const height = canvas.height;
@@ -84,7 +94,7 @@ export default function VehicleAnatomyExplorer() {
     ctx.fillStyle = '#0B0D0F';
     ctx.fillRect(0, 0, width, height);
 
-    // Large Visually Dominant Scaling Calculation (95-98% occupancy)
+    // Massive Edge-to-Edge Full-Screen Sizing Calculation
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
@@ -92,10 +102,10 @@ export default function VehicleAnatomyExplorer() {
     let drawHeight = height;
 
     if (canvasAspect > imgAspect) {
-      drawHeight = height * 0.96;
+      drawHeight = height * 1.35;
       drawWidth = drawHeight * imgAspect;
     } else {
-      drawWidth = width * 0.98;
+      drawWidth = width * 1.45;
       drawHeight = drawWidth / imgAspect;
     }
 
@@ -111,7 +121,7 @@ export default function VehicleAnatomyExplorer() {
       ctx.shadowBlur = 0;
     }
 
-    // Draw large dominant car frame
+    // Draw full-screen car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
     // Technical Blueprint Grid Overlay
@@ -177,15 +187,16 @@ export default function VehicleAnatomyExplorer() {
     const handleResize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
       renderFrame(currentFrameRef.current, Boolean(hoveredPartId));
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
   }, [hoveredPartId, renderFrame]);
 
   // Re-render when hovered part changes
@@ -193,13 +204,13 @@ export default function VehicleAnatomyExplorer() {
     renderFrame(currentFrameRef.current, Boolean(hoveredPartId));
   }, [hoveredPartId, renderFrame]);
 
-  // Interactive Label visibility — Visible immediately from top of section (0.0 to 0.98)
+  // Interactive Label visibility — Visible from top of section (0.0 to 0.98)
   const labelsOpacity = useTransform(scrollYProgress, [0.0, 0.05, 0.98, 1.0], [1, 1, 1, 0]);
 
   return (
     <section id="anatomy" ref={containerRef} className="relative h-[550vh] w-full p-0 m-0 bg-garage-dark">
       {/* Sticky Full-Screen Stage - Remains pinned to viewport throughout entire 550vh scroll sequence */}
-      <div className="sticky top-0 h-screen h-[100dvh] h-[100svh] w-full max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
+      <div className="sticky top-0 left-0 right-0 w-screen h-screen min-h-[100dvh] h-[100dvh] h-[100svh] max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Render Stage */}
         <canvas
           ref={canvasRef}
@@ -207,7 +218,7 @@ export default function VehicleAnatomyExplorer() {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`w-full h-full h-[100dvh] object-cover block bg-garage-dark ${
+          className={`w-screen h-screen min-h-[100dvh] h-[100dvh] object-cover block bg-garage-dark ${
             isDragging ? 'cursor-grabbing' : 'cursor-grab'
           }`}
         />

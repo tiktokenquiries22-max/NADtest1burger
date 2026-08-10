@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - Massive Full-Screen Edge-to-Edge Fill
+  // Canvas render function - Massive Full-Screen Edge-to-Edge Fill (2.80x Desktop, 2.60x Mobile)
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -86,9 +86,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Zoom multiplier (2.45x desktop, 2.20x mobile) to make Range Rover massive and fill 100% of the screen
+    // Massive Zoom multiplier (2.80x desktop, 2.60x mobile) to guarantee vehicle fills 100% of screen on every device
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 2.20 : 2.45;
+    const zoomScale = isMobilePortrait ? 2.60 : 2.80;
 
     let drawWidth = width;
     let drawHeight = height;
