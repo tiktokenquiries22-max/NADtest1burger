@@ -90,9 +90,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Subtle zoom multiplier (1.85x desktop, 1.75x mobile) - reveals ~10% more vehicle context while guaranteeing 100% full-screen cover
+    // Subtle zoom multiplier (1.65x desktop, 1.55x mobile) - reveals an additional ~5% vehicle/environment while guaranteeing 100% full-screen cover
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 1.75 : 1.85;
+    const zoomScale = isMobilePortrait ? 1.55 : 1.65;
 
     let drawWidth = width;
     let drawHeight = height;
