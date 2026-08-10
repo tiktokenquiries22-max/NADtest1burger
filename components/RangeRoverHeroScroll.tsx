@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - True Full Screen Edge-to-Edge Cover Sizing
+  // Canvas render function - Massive Full-Screen Edge-to-Edge Fill
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -86,9 +86,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Zoom scale factor to ensure 100% edge-to-edge fill with zero whitespace or margins
+    // Aggressive Zoom multiplier to eliminate all internal image padding and make car fill 100% of the screen
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 1.45 : 1.28;
+    const zoomScale = isMobilePortrait ? 2.15 : 1.70;
 
     let drawWidth = width;
     let drawHeight = height;
@@ -111,10 +111,10 @@ export default function RangeRoverHeroScroll() {
     const gradient = ctx.createRadialGradient(
       width / 2,
       height / 2,
-      Math.min(width, height) * 0.4,
+      Math.min(width, height) * 0.35,
       width / 2,
       height / 2,
-      Math.max(width, height) * 0.8
+      Math.max(width, height) * 0.85
     );
     gradient.addColorStop(0, 'rgba(11, 13, 15, 0)');
     gradient.addColorStop(1, 'rgba(11, 13, 15, 0.85)');
@@ -165,12 +165,12 @@ export default function RangeRoverHeroScroll() {
 
   return (
     <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky Fullscreen Viewport Stage - Pinned to 100% viewport throughout entire 500vh scroll sequence */}
-      <div className="sticky top-0 left-0 right-0 h-screen min-h-[100dvh] h-[100dvh] h-[100svh] w-full w-screen max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
+      {/* Sticky Fullscreen Viewport Stage - Completely fills screen (100vw x 100vh / 100dvh) */}
+      <div className="sticky top-0 left-0 right-0 w-screen h-screen min-h-[100dvh] h-[100dvh] h-[100svh] max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full min-h-[100dvh] object-cover block bg-garage-dark p-0 m-0 border-none"
+          className="absolute inset-0 w-screen h-screen min-h-[100dvh] h-[100dvh] object-cover block bg-garage-dark p-0 m-0 border-none"
         />
 
         {/* Loading Overlay */}
