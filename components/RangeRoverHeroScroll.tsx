@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - Massive Full-Screen Edge-to-Edge Fill (2.80x Desktop, 2.60x Mobile)
+  // Canvas render function - High Quality HD Edge-to-Edge Cover Sizing
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -64,8 +64,8 @@ export default function RangeRoverHeroScroll() {
     const img = imagesRef.current[frameIndex];
     if (!img || !img.complete || img.naturalWidth === 0) return;
 
-    // Synchronize canvas internal width/height to device viewport
-    const dpr = window.devicePixelRatio || 1;
+    // High-DPI Resolution scaling for maximum image sharpness
+    const dpr = Math.max(2, window.devicePixelRatio || 1);
     const targetWidth = window.innerWidth * dpr;
     const targetHeight = window.innerHeight * dpr;
 
@@ -77,6 +77,10 @@ export default function RangeRoverHeroScroll() {
     const width = canvas.width;
     const height = canvas.height;
 
+    // High-quality canvas sampling
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
     ctx.clearRect(0, 0, width, height);
 
     // Studio dark background fill
@@ -86,9 +90,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Massive Zoom multiplier (2.80x desktop, 2.60x mobile) to guarantee vehicle fills 100% of screen on every device
+    // Subtle zoom multiplier (1.85x desktop, 1.75x mobile) - reveals ~10% more vehicle context while guaranteeing 100% full-screen cover
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 2.60 : 2.80;
+    const zoomScale = isMobilePortrait ? 1.75 : 1.85;
 
     let drawWidth = width;
     let drawHeight = height;
@@ -104,7 +108,7 @@ export default function RangeRoverHeroScroll() {
     const offsetX = (width - drawWidth) / 2;
     const offsetY = (height - drawHeight) / 2;
 
-    // Draw zoomed full-screen car frame
+    // Draw sharp zoomed full-screen car frame
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
     // Subtle edge vignette
