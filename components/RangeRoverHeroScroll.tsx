@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - High Quality Sharp HD Edge-to-Edge Cover Sizing at 1.20x Scale
+  // Canvas render function - High Quality Sharp HD Edge-to-Edge Cover Sizing at 1.00x Scale
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -90,8 +90,8 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Scaled precisely to 1.20x as requested while maintaining 100% full-screen cover fill
-    const zoomScale = 1.20;
+    // Scaled precisely to 1.00x while maintaining 100% full-screen cover fill
+    const zoomScale = 1.00;
 
     let drawWidth = width;
     let drawHeight = height;
