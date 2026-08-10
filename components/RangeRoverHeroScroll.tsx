@@ -54,7 +54,7 @@ export default function RangeRoverHeroScroll() {
     imagesRef.current = imgArray;
   }, []);
 
-  // Canvas render function - High Quality HD Edge-to-Edge Cover Sizing
+  // Canvas render function - High Quality Sharp HD Edge-to-Edge Cover Sizing
   const renderFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -90,9 +90,9 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Subtle zoom multiplier (1.65x desktop, 1.55x mobile) - reveals an additional ~5% vehicle/environment while guaranteeing 100% full-screen cover
+    // Zoom multiplier (1.45x desktop, 1.35x mobile) - reduces pixelation upscaling for razor-sharp HD clarity while guaranteeing 100% full-screen cover
     const isMobilePortrait = width / height < 1.0;
-    const zoomScale = isMobilePortrait ? 1.55 : 1.65;
+    const zoomScale = isMobilePortrait ? 1.35 : 1.45;
 
     let drawWidth = width;
     let drawHeight = height;
