@@ -36,7 +36,7 @@ export default function HeroTextOverlays({ progress }: HeroTextOverlaysProps) {
           BELL AUTOMOTIVE SPECIALIST SHOWROOM
         </div>
         <h1 className={`text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter text-white ${textShadowClass}`}>
-          THE RANGE ROVER
+          4X4 SPECIALISTS
         </h1>
         <p className={`mt-4 text-base sm:text-xl md:text-2xl font-light tracking-widest text-neutral-200 uppercase ${textShadowClass}`}>
           Engineered to be understood.
