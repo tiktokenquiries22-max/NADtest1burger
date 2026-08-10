@@ -90,7 +90,7 @@ export default function RangeRoverHeroScroll() {
     const imgAspect = img.naturalWidth / img.naturalHeight;
     const canvasAspect = width / height;
 
-    // Scaled precisely to 1.00x while maintaining 100% full-screen cover fill
+    // Cover scale factor 1.00x
     const zoomScale = 1.00;
 
     let drawWidth = width;
@@ -168,12 +168,12 @@ export default function RangeRoverHeroScroll() {
 
   return (
     <section ref={containerRef} className="relative h-[500vh] w-full p-0 m-0 bg-garage-dark">
-      {/* Sticky Fullscreen Viewport Stage - Completely fills screen (100vw x 100vh / 100dvh) */}
-      <div className="sticky top-0 left-0 right-0 w-screen h-screen min-h-[100dvh] h-[100dvh] h-[100svh] max-w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
+      {/* Sticky Fullscreen Viewport Stage - Rock-solid pinned to top:0 throughout entire 500vh scroll sequence */}
+      <div className="sticky top-0 left-0 right-0 h-screen w-full overflow-hidden flex items-center justify-center p-0 m-0 border-none z-10">
         {/* Canvas Renderer */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-screen h-screen min-h-[100dvh] h-[100dvh] object-cover block bg-garage-dark p-0 m-0 border-none"
+          className="absolute inset-0 w-full h-full object-cover block bg-garage-dark p-0 m-0 border-none"
         />
 
         {/* Loading Overlay */}
